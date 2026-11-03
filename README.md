@@ -1,16 +1,21 @@
-# 🧠 Imersão Dev Engenharia de Software na Era da IA: Agente de Estudos com Antigravity CLI + Google ADK
+# Agente de Estudos com Antigravity CLI + Google ADK
 
-Neste lab você vai usar o **Antigravity CLI (`agy`)** para criar, com o **Google ADK**, um agente especialista em estudos. O agente usa a skill [`plano-de-estudos`](skills/plano-de-estudos/SKILL.md): você diz o que quer aprender e até quando, e ele monta um plano de estudos e salva um arquivo CSV para importar no Google Agenda, usando o [EnvironmentToolset](https://adk.dev/integrations/environment-toolset/) do ADK.
+Projeto de um agente especialista em estudos, criado com o **Antigravity CLI (`agy`)** e o **Google ADK**.
+
+O agente usa a skill [`plano-de-estudos`](skills/plano-de-estudos/SKILL.md): você diz o que quer aprender e até quando, e ele monta um plano de estudos e salva um CSV para importar no Google Agenda, usando o [EnvironmentToolset](https://adk.dev/integrations/environment-toolset/) do ADK.
+
+## O que este projeto faz
+
+- Entrevista o usuário sobre objetivo, prazo, disponibilidade e nível
+- Monta um plano com revisão espaçada e checkpoints
+- Gera `plano-de-estudos.csv` para importar no Google Agenda
+- Roda localmente no ADK Web (sem deploy)
 
 ## Pré-requisitos
 
 - Conta Google com um projeto do Google Cloud com faturamento ativo (os créditos do [free trial](https://cloud.google.com/free) servem)
 - Chave de API do Google AI Studio, criada em [aistudio.google.com/apikey](https://aistudio.google.com/apikey)
 - Conta no GitHub
-
----
-
-# Aula 3: Introdução ao Antigravity CLI
 
 ## 1. Preparar o Cloud Shell
 
@@ -37,7 +42,7 @@ curl -fsSL https://antigravity.google/cli/install.sh | bash
 source ~/.bashrc
 ```
 
-Para iniciar o Antigravity CLI, utilize o comando:
+Inicie o Antigravity CLI:
 
 ```bash
 agy
@@ -54,8 +59,6 @@ No setup do `agy`, escolha:
 > Dica: no Cloud Shell, use `CTRL+SHIFT+V` para colar. O `CTRL+C` encerra o programa.
 
 ## 3. Primeiros passos no `agy`
-
-Teste alguns comandos e prompts:
 
 ```text
 /help
@@ -85,7 +88,7 @@ No `agy`:
 /grill-me
 ```
 
-O `agy` vai te entrevistar sobre o agente. Use estas respostas como base:
+Use estas respostas como base:
 
 - **Objetivo:** um mentor de estudos que monta planos personalizados, com revisão espaçada e uma agenda em CSV para o Google Agenda.
 - **Skills:** usar ADK Skills ([adk.dev/skills](https://adk.dev/skills/)) com a skill `skills/plano-de-estudos`.
@@ -101,13 +104,7 @@ Crie um agente ADK chamado agente-estudos seguindo as convenções do agents-cli
 
 Saia com `/exit`.
 
----
-
-# Aula 4: Engenharia de software com IA e CLI
-
 ## 6. Configurar a API Key
-
-Configure o agente com a sua chave do AI Studio (ela não aparece na tela):
 
 ```bash
 cd ~/alura-imersao-dev/agente-estudos
@@ -128,33 +125,33 @@ uv sync
 uv run adk web --allow_origins="*"
 ```
 
-Clique no link `http://127.0.0.1:8000` que aparece no terminal e escolha o agente `app`. Teste:
+Abra o link `http://127.0.0.1:8000`, escolha o agente `app` e teste:
 
-1. **Pedido incompleto:** o agente deve fazer perguntas antes de montar o plano.
-    ```text
-    Quero organizar meus estudos de JavaScript.
-    ```
-2. **Pedido completo:** o agente deve entregar o plano e chamar a ferramenta `WriteFile` para salvar o CSV.
-    ```text
-    Quero aprender JavaScript para fazer meu primeiro projeto de portfólio em 5 semanas. Começo segunda que vem. Posso estudar segunda, quarta e sexta, 2h por dia às 19h. Já sei HTML e CSS, mas nunca programei.
-    ```
-3. **Ajuste:** o agente deve reorganizar o plano e sobrescrever o CSV.
-    ```text
-    Perdi as sessões de quarta e sexta da primeira semana. Ajusta o plano?
-    ```
+1. **Pedido incompleto** — o agente deve perguntar antes de montar o plano:
+   ```text
+   Quero organizar meus estudos de JavaScript.
+   ```
+2. **Pedido completo** — o agente deve entregar o plano e chamar `WriteFile`:
+   ```text
+   Quero aprender JavaScript para fazer meu primeiro projeto de portfólio em 5 semanas. Começo segunda que vem. Posso estudar segunda, quarta e sexta, 2h por dia às 19h. Já sei HTML e CSS, mas nunca programei.
+   ```
+3. **Ajuste** — o agente deve reorganizar o plano e sobrescrever o CSV:
+   ```text
+   Perdi as sessões de quarta e sexta da primeira semana. Ajusta o plano?
+   ```
 
-No ADK Web, clique nos eventos `WriteFile` para ver os argumentos e a resposta da ferramenta. Depois confira o arquivo numa segunda aba do Cloud Shell:
+Confira o CSV:
 
 ```bash
 cat ~/alura-imersao-dev/agente-estudos/planos/plano-de-estudos.csv
 cloudshell download ~/alura-imersao-dev/agente-estudos/planos/plano-de-estudos.csv
 ```
 
-Com o arquivo no computador, importe no [Google Agenda](https://calendar.google.com/): **Configurações → Importar e exportar → Importar**.
+Importe no [Google Agenda](https://calendar.google.com/): **Configurações → Importar e exportar → Importar**.
 
 ## 8. Evoluir o agente com o `agy`
 
-Abra uma segunda aba no Cloud Shell (`+`) e rode:
+Em outra aba do Cloud Shell:
 
 ```bash
 cd ~/alura-imersao-dev
@@ -167,13 +164,13 @@ agy
 Revise o código do agente-estudos e liste os problemas por severidade antes de corrigir.
 ```
 
-**Validar o resultado:**
+**Validar o CSV:**
 
 ```text
 Leia agente-estudos/planos/plano-de-estudos.csv e confira se ele segue as regras do CSV em skills/plano-de-estudos/assets/plano_template.md: cabeçalho, formato de data e hora, aspas na descrição e nenhuma sessão fora dos dias combinados. Liste o que estiver errado.
 ```
 
-**Corrigir um problema que você viu no teste:**
+**Corrigir um problema do teste:**
 
 ```text
 No teste do ADK Web ou na validação, o agente [descreva o problema]. Descubra a causa e corrija.
@@ -185,24 +182,22 @@ No teste do ADK Web ou na validação, o agente [descreva o problema]. Descubra 
 Crie uma skill ADK chamada revisao-ativa, no mesmo padrão da plano-de-estudos, que recebe um material de estudo e gera flashcards e um quiz de 5 perguntas. Adicione-a ao agente.
 ```
 
-Para testar, reinicie o ADK Web na primeira aba (`CTRL+C` e `uv run adk web --allow_origins="*"`).
+Reinicie o ADK Web (`CTRL+C` e `uv run adk web --allow_origins="*"`).
 
 ## 9. Versionar no GitHub
-
-1. Configure o seu nome e e-mail no git:
 
 ```bash
 git config --global user.name "Seu Nome"
 git config --global user.email "seu-email@exemplo.com"
 ```
 
-2. No `agy`, peça para preparar os commits:
+No `agy`:
 
 ```text
 Confira se não há API Key em nenhum arquivo versionado e faça commits com mensagens descritivas das mudanças.
 ```
 
-3. Saia do `agy` (`/exit`) e envie para o seu repositório no GitHub:
+Depois:
 
 ```bash
 cd ~/alura-imersao-dev
@@ -210,9 +205,7 @@ git remote set-url origin https://github.com/SEU_USUARIO/agente-estudos.git
 git push -u origin main
 ```
 
----
-
-## 📚 Referências
+## Referências
 
 - [Antigravity CLI](https://antigravity.google/)
 - [Google ADK: documentação](https://adk.dev/)
